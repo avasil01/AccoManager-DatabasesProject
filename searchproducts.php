@@ -28,8 +28,7 @@ $params = array(
     $data["endDate"],
     $data["guests"]
 );
-var_dump($params);
-die();
+
 
 $stmt = sqlsrv_query($conn, $sql, $params);
 if ($stmt === false) {

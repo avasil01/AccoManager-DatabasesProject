@@ -66,6 +66,7 @@
             </div>
             <button class="button-19" role="search" style="width: fit-content; height: fit-content;" onclick="searchProducts()">Search</button>
         </div>   
+        <div id="results" class="results"></div>
    
     </section>
   </main>
@@ -77,13 +78,21 @@
 <script>
 function searchProducts() {
     // Example data to send - adjust according to your actual input fields
+    var location = document.getElementById('city').value;
+    var startDate = document.getElementById('start-date').value;
+    var endDate = document.getElementById('end-date').value;
+    var guests = document.getElementById('visitors').value;
     var data = {
-        location: 'Paphos' ,
-        startDate: '2023-12-01' ,
-        endDate: '2023-12-02' ,
-        guests: 2
+        location: location ,
+        startDate: startDate ,
+        endDate: endDate ,
+        guests: guests
     };
-    
+    if (!startDate || !endDate || guests <= 0) {
+        alert("Please fill all the fields correctly.");
+        return;
+    }
+
     // AJAX request to PHP
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "searchproducts.php", true);
@@ -98,7 +107,30 @@ function searchProducts() {
             console.error("Error parsing JSON: ", e);
             return;
         }
-            // Inject results into your webpage
+        var resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+        if (results.length > 0) {
+               // Create and inject result elements
+               results.forEach(function (result) {
+                    var resultElement = document.createElement('div');
+                    resultElement.className = 'result-item';
+
+                    // Construct the inner HTML for each result
+                    resultElement.innerHTML = 
+                        '<h3>' + result.name + ' (ID: ' + result.legal_id + ')</h3>' +
+                        '<p>Price: ' + result.price + '</p>' +
+                        '<p>Address: ' + result.address + '</p>' +
+                        '<p>Coordinates: ' + result.coordinates + '</p>' +
+                        '<p>Contact Number: ' + result.contact_number + '</p>';
+
+                    resultsContainer.appendChild(resultElement);
+                }); 
+            } else {
+                // No results found
+                document.getElementById('results').innerHTML = '<p>No results found.</p>';
+            }
+
 
         }
     };
