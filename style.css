@@ -1,0 +1,281 @@
+    .login-wrapper {
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px;
+        padding: 40px;
+        border-radius: 10px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+    }
+    .input-box {
+        position: relative;
+        margin-bottom: 20px;
+        width: 80%;
+        max-width: 400px;
+     }
+     .role-selection {
+        display: flex; /* Use flexbox to align items in a row */
+        gap: 10px; 
+        margin-bottom: 20px;
+        justify-content: center;
+      }
+      
+      .role-selection label {
+        display: flex;
+        align-items: center; /* Aligns the checkbox and label text */
+      }
+      
+    body {
+      font-family: Arial, sans-serif;
+      color: #333;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #1c4171;
+      padding: 10px 0;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      padding: 0;
+    }
+    nav ul li {
+      margin: 0 10px;
+      display: flex;
+      align-items: center;
+    }
+    nav a, nav label {
+      color: white;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    nav a:hover {
+      background-color: #0a9396;
+    }
+    h1, h2 {
+      color: #3d5a80;
+    }
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex; /* Enable Flexbox */
+      flex-direction: column; /* Stack elements vertically */
+      align-items: center; /* Center-align children horizontally */
+      width: 40%; /* Adjust width to fit its content */
+     
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    footer {
+      background-color: #1c4171;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 30px;
+    }
+    @media (max-width: 600px) {
+      nav ul {
+        flex-direction: column;
+        align-items: right;
+      }
+      nav ul li {
+        margin: 5px 0;
+      }
+      select {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+    select {
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: white;
+      color: #333;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    nav label {
+      font-size: 14px;
+      margin-right: 5px;
+      color: white;
+      vertical-align: middle;
+    }
+
+    /* Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.img-style{
+    width: 20%;
+    float: left;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.button-19 {
+  appearance: button;
+  background-color: #a39488;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #1c4171;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round,sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  line-height: 20px;
+  margin: 0;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 100%;
+}
+
+
+.button-19:after {
+  background-clip: padding-box;
+  background-color: #ECD6C3;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.button-19:main,
+.button-19:focus {
+  user-select: auto;
+}
+
+.button-19:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+}
+
+.button-19:disabled {
+  cursor: auto;
+}
+
+.button-19:active {
+  border-width: 4px 0 0;
+  background: none;
+}
+.booking-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px; /* Adjusts the space between the dropdown and date inputs */
+    padding: 50px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .form-control {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-control label {
+    margin-bottom: 5px;
+  }
+  
+  .form-control select,
+  .form-control input[type="date"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .number-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .number-input button {
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .number-input input[type="number"] {
+    text-align: center;
+    border: none;
+    padding: 10px;
+    width: 40px;
+    font-size: 16px;
+  }
+  
+  /* Prevent ugly spinners on number inputs */
+  .number-input input[type="number"]::-webkit-inner-spin-button,
+  .number-input input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .number-input input[type="number"]:focus {
+    outline: none;
+  }
+  
