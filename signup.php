@@ -24,12 +24,12 @@
   </header>
 
   <div class="login-wrapper">
-    <form action="/login" method="POST" class="login-form">
+    <form action="/login" method="POST" class="login-form" style="width: 80%; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
         <h1>Sign up</h1>
-        <div class="input-box">
+        <div class="input-box"  style="width: 100%; margin-bottom: 10px;">
             <input type="text" name="username" placeholder="Username" required>
         </div>
-        <div class="input-box">
+        <div class="input-box"  style="width: 100%; margin-bottom: 10px;">
             <input type="password" name="password" placeholder="Password" required>
         </div>
 
