@@ -26,13 +26,37 @@
   <div class="login-wrapper">
     <form action="signup_conn.php" method="POST" class="login-form" style="width: 80%; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
         <h1>Sign up</h1>
-        <div class="input-box"  style="width: 100%; margin-bottom: 10px;">
+
+        <!-- Full Name Input -->
+        <div class="input-box" style="width: 100%; margin-bottom: 10px;">
+            <input type="text" name="full_name" placeholder="Full Name" required>
+        </div>
+
+        <!-- Username Input -->
+        <div class="input-box" style="width: 100%; margin-bottom: 10px;">
             <input type="text" name="username" placeholder="Username" required>
         </div>
-        <div class="input-box"  style="width: 100%; margin-bottom: 10px;">
+
+        <!-- Password Input -->
+        <div class="input-box" style="width: 100%; margin-bottom: 10px;">
             <input type="password" name="password" placeholder="Password" required>
         </div>
 
+        <!-- Sex Selection Dropdown -->
+        <div class="input-box" style="width: 20%; margin-bottom: 10px;">
+            <select name="sex" required>
+                <option value="">Select Sex</option>
+                <option value="M">M</option>
+                <option value="F">F</option>
+            </select>
+        </div>
+
+        <!-- Birthday Input -->
+        <div class="input-box" style="width: 100%; margin-bottom: 10px;">
+            <input type="date" name="birthday" required>
+        </div>
+
+        <!-- Role Selection Radio Buttons -->
         <div class="role-selection">
             <label>
             <input type="radio" name="role" value="user" checked> User
@@ -42,9 +66,10 @@
             </label>
         </div>
 
-      <button type="submit" class="button-19" style="width: 30%">Submit</button>
+        <button type="submit" class="button-19" style="width: 30%">Submit</button>
     </form>
-  </div>
+</div>
+
 
   <footer>
     <p>&copy; 2023 AccoManager. All rights reserved.</p>
