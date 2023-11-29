@@ -1,44 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AccoManager - Booking Page</title>
-  <link rel="stylesheet" type="text/css" href="../style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccoManager - Booking Page</title>
+    <link rel="stylesheet" type="text/css" href="../style.css"/>
 </head>
-
 <body>
-  <header>
+<header>
     <nav>
-      <ul>
-        <img src="../logo.png" class="img-style">
-       
-        <li>
-          <label for="language-select">Language:</label>
-          <select name="language" id="language-select">
-            <option value="en">English</option>
-            <option value="gr">Greek</option>
-          </select>
-        </li>
-      </ul>
+        <ul>
+            <img src="../logo.png" class="img-style">
+            <li>
+                <label for="language-select">Language:</label>
+                <select name="language" id="language-select">
+                    <option value="en">English</option>
+                    <option value="gr">Greek</option>
+                </select>
+            </li>
+        </ul>
     </nav>
-  </header>
-
-  <main>
-  
+</header>
+<main>
     <div class="header-with-button">
         <h1 style="margin-left: 30px;">Logged in User</h1>
         <button class="manage-bookings-button">Manage Bookings</button>
     </div>
-    
     <div id="bookingsList" class="bookings-list" style="display: none;">
         <!-- Bookings will be listed here -->
     </div>
-
     <div class="separator"></div>
     <h1 id="discoverText" style="margin-left: 30px;">Discover your upcoming accommodation</h1>
-    <h3 id="exploreText" style="margin-left: 30px; color: #3d5a80;">Explore offers on hotels, residences, and various other options...</h3>
-
+    <h3 id="exploreText" style="margin-left: 30px; color: #3d5a80;">Explore offers on hotels, residences, and various
+        other options...</h3>
     <section>
         <div class="booking-form">
             <div class="form-control">
@@ -68,184 +62,212 @@
                     <button onclick="incrementValue()" type="button">+</button>
                 </div>
             </div>
-            <button class="button-19" role="search" style="width: fit-content; height: fit-content;" onclick="searchProducts()">Search</button>
-        </div>   
+            <button class="button-19" role="search" style="width: fit-content; height: fit-content;"
+                    onclick="searchProducts()">Search
+            </button>
+            <div id="resultsContainer"></div>
+        </div>
         <div id="results" class="results" style="display: flex; justify-content: center;"></div>
-   
     </section>
-  </main>
-  <footer>
+</main>
+<footer>
     <p>&copy; 2023 AccoManager. All rights reserved.</p>
-  </footer>
-</body>
-
+</footer>
 <script>
- document.querySelector('.manage-bookings-button').addEventListener('click', function() {
-    // Hide elements
-    document.querySelector('.header-with-button').style.display = 'none';
-    document.querySelector('.separator').style.display = 'none';
-    document.getElementById('discoverText').style.display = 'none'; // Hides the "Discover your upcoming accommodation" text
-    document.getElementById('exploreText').style.display = 'none'; // Hides the "Explore offers on hotels, residences, and various other options..." text
-    document.querySelector('section').style.display = 'none'; // Hides the section containing the form and results
+    document.querySelector('.manage-bookings-button').addEventListener('click', function () {
+        document.querySelector('.header-with-button').style.display = 'none';
+        document.querySelector('.separator').style.display = 'none';
+        document.getElementById('discoverText').style.display = 'none';
+        document.getElementById('exploreText').style.display = 'none';
+        document.querySelector('section').style.display = 'none';
+        document.getElementById('bookingsList').style.display = 'block';
+    });
 
-    // Show bookings list
-    document.getElementById('bookingsList').style.display = 'block';
-});
-
-
-
-function searchProducts() {
-    // Example data to send - adjust according to your actual input fields
-    var location = document.getElementById('city').value;
-    var startDate = document.getElementById('start-date').value;
-    var endDate = document.getElementById('end-date').value;
-    var guests = document.getElementById('visitors').value;
-    var data = {
-        location: location ,
-        startDate: startDate ,
-        endDate: endDate ,
-        guests: guests
-    };
-    if (!startDate || !endDate || guests <= 0) {
-        alert("Please fill all the fields correctly.");
-        return;
-    }
-
-    // AJAX request to PHP
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "searchproducts.php", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-           console.log(xhr.responseText); // Check the actual response
-        var results;
-        try {
-            results = JSON.parse(xhr.responseText);
-        } catch (e) {
-            console.error("Error parsing JSON: ", e);
+    function searchProducts() {
+        var location = document.getElementById('city').value;
+        var startDate = document.getElementById('start-date').value;
+        var endDate = document.getElementById('end-date').value;
+        var guests = document.getElementById('visitors').value;
+        var data = {
+            location: location,
+            startDate: startDate,
+            endDate: endDate,
+            guests: guests
+        };
+        if (!startDate || !endDate || guests <= 0) {
+            alert("Please fill all the fields correctly.");
             return;
         }
-        var resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = '';
-
-        if (results.length > 0) {
-               // Create and inject result elements
-               results.forEach(function (result) {
-                    var resultElement = document.createElement('div');
-                    resultElement.className = 'result-item';
-
-                    // Construct the inner HTML for each result
-                    resultElement.innerHTML = 
-                        '<h3>' + result.name + ' (ID: ' + result.legal_id + ')</h3>' +
-                        '<p>Price: ' + result.price + '</p>' +
-                        '<p>Address: ' + result.address + '</p>' +
-                        '<p>Coordinates: ' + result.coordinates + '</p>' +
-                        '<p>Contact Number: ' + result.contact_number + '</p>' +
-                        '<button class="availability-button">See Availability</button>'; // Added button
-
-                    resultsContainer.appendChild(resultElement);
-                    
-                    var availabilityButton = resultElement.querySelector('.availability-button');
-
-                    // Add click event listener to the button
-                    availabilityButton.addEventListener('click', function() {
-                        showAvailability(resultElement, result.name);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "../searchproducts.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log(xhr.responseText);
+                var results;
+                try {
+                    results = JSON.parse(xhr.responseText);
+                } catch (e) {
+                    console.error("Error parsing JSON: ", e);
+                    return;
+                }
+                var resultsContainer = document.getElementById('results');
+                resultsContainer.innerHTML = '';
+                if (results.length > 0) {
+                    results.forEach(function (result) {
+                        var resultElement = document.createElement('div');
+                        resultElement.className = 'result-item';
+                        resultElement.innerHTML =
+                            '<h3>' + result.name + ' (ID: ' + result.legal_id + ')</h3>' +
+                            '<p>Price: ' + result.price + '</p>' +
+                            '<p>Address: ' + result.address + '</p>' +
+                            '<p>Coordinates: ' + result.coordinates + '</p>' +
+                            '<p>Contact Number: ' + result.contact_number + '</p>' +
+                            '<button class="availability-button">See Availability</button>' +
+                            '<div class="availability-info" style="display: none;"></div>'; // Additional div for availability info
+                        resultsContainer.appendChild(resultElement);
+                        var availabilityButton = resultElement.querySelector('.availability-button');
+                        availabilityButton.addEventListener('click', function () {
+                            showAvailability(resultElement, result.legal_id, startDate, endDate, guests, result.name);
+                            this.disabled = true;
+                            this.style.display = 'none';
+                        });
                     });
-
-                    resultsContainer.appendChild(resultElement);
-                }); 
-            } else {
-                // No results found
-                document.getElementById('results').innerHTML = '<p>No results found.</p>';
+                } else {
+                    document.getElementById('results').innerHTML = '<p>No results found.</p>';
+                }
             }
-
-
         }
+        xhr.send(JSON.stringify(data));
+    }
 
-        
-        function showAvailability(resultElement, accommodationName) {
-            // Hide the selected accommodation
-            resultElement.style.display = 'none';
+    function showAvailability(resultElement, legal_id, start_Date, end_Date, guests_, accommodationName) {
+        var availabilityInfoDiv = resultElement.querySelector('.availability-info');
+        var startDate = start_Date;
+        var endDate = end_Date;
+        var guests = guests_;
+        var data = {
+            accommodationLegalId: legal_id,
+            guests: guests,
+            startDate: startDate,
+            endDate: endDate
+        };
+        console.log(data);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "getAccommodationTypeDetails.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var types;
+                try {
+                    types = JSON.parse(xhr.responseText);
+                } catch (e) {
+                    console.error("Error parsing JSON: ", e);
+                    return;
+                }
+                if (types.length === 0) {
+                    availabilityInfoDiv.innerHTML = '<p>No available accommodation types found.</p>';
+                } else {
+                    types.forEach(function (type) {
+                        var div = document.createElement('div');
+                        div.className = 'rooms-list';
+                        div.innerHTML = '<h3>' + accommodationName + '</h3>' +
+                            '<h3>' + type.typeName + '</h3>' +
+                            '<p>Max Guests: ' + type.max_guests + '</p>' +
+                            '<p>Bedrooms: ' + type.bedrooms + '</p>' +
+                            '<p>Available Rooms: ' + type.available_rooms + '</p>' +
+                            '<p>Size: ' + type.size + ' sqm</p>' +
+                            '<p class="total-price">Total Price: <span class="price-amount">' + type.TotalPrice + ' €</span></p>' +
+                            '<button class="book-button">BOOK</button>';
+                        availabilityInfoDiv.appendChild(div);
 
-            // Create a new list for the accommodation rooms (empty for now)
-            var roomsList = document.createElement('div');
-            roomsList.className = 'rooms-list';
-            roomsList.innerHTML = '<h3>' + accommodationName + '</h3>';
+                        div.querySelector('.book-button').addEventListener('click', function () {
+                            bookAccommodation(type.typeID, startDate, endDate, guests);
+                        });
+                    });
+                }
+                availabilityInfoDiv.style.display = 'block'; // Show the availability info
 
-            // Append the new list to the results container
-            var resultsContainer = document.getElementById('results');
-            resultsContainer.appendChild(roomsList);
-        }
-    };
-    xhr.send(JSON.stringify(data));
-}
+
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    }
+
+    var loginBtn = document.getElementById("loginBtn");
+    var signupBtn = document.getElementById("signupBtn");
+    if (loginBtn) {
+        loginBtn.onclick = function () {
+            window.location.href = "login.php";
+        };
+    }
+    if (signupBtn) {
+        signupBtn.onclick = function () {
+            window.location.href = "signup.php";
+        };
+    }
+
+    function incrementValue() {
+        var value = parseInt(document.getElementById('visitors').value, 10);
+        value = isNaN(value) ? 0 : value;
+        value++;
+        document.getElementById('visitors').value = value;
+    }
+
+    function bookAccommodation(accommodationTypeId, startDate, endDate, username) {
+        var data = {
+            accommodationTypeId: accommodationTypeId,
+            startDate: startDate,
+            endDate: endDate,
+            username: ' GHoang92'
+        };
+        console.log(data);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "bookAccommodation.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Handle the response
+                alert("Booking successful!"); // Placeholder response handling
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    }
+
+    function decrementValue() {
+        var value = parseInt(document.getElementById('visitors').value, 10);
+        value = isNaN(value) ? 0 : value;
+        value < 1 ? value = 0 : value--;
+        document.getElementById('visitors').value = value;
+    }
 </script>
+</body>
+<style>
+    .total-price {
+        font-weight: bold;
+        margin-top: 10px;
+        font-size: 1.2em;
+    }
+    .price-amount {
+        color: #4CAF50; /* Example: Green color for the price */
+        font-size: 1.4em;
+    }
+    .book-button {
+        background-color: #4CAF50; /* Green background */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
 
-
-<!-- 
-<div id="signupModal" class="modal">
-  
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <form action="signup_process.php" method="post">
-     
-      <input type="text" name="username" placeholder="Username">
-      <input type="password" name="password" placeholder="Password">
-      <input type="submit" value="Sign Up">
-    </form>
-  </div>
-</div>
-
-
-
-
-<div id="loginModal" class="modal">
- 
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <form action="login_process.php" method="post">
-      
-      <input type="text" name="username" placeholder="Username">
-      <input type="password" name="password" placeholder="Password">
-      <input type="submit" value="Login">
-    </form>
-  </div>
-</div> -->
-
-
-
+    .book-button:hover {
+        background-color: #45a049; /* Darker shade of green */
+    }</style>
 </html>
-
-
-
-<script>
-// Get the login button
-var loginBtn = document.getElementById("loginBtn");
-
-// When the user clicks on the login button, redirect to login.php
-loginBtn.onclick = function() {
-  window.location.href = "login.php";
-}
-var signupBtn = document.getElementById("signupBtn");
-
-// When the user clicks on the login button, redirect to login.php
-signupBtn.onclick = function() {
-  window.location.href = "signup.php";
-}
-
-function incrementValue() {
-  var value = parseInt(document.getElementById('visitors').value, 10);
-  value = isNaN(value) ? 0 : value;
-  value++;
-  document.getElementById('visitors').value = value;
-}
-
-function decrementValue() {
-  var value = parseInt(document.getElementById('visitors').value, 10);
-  value = isNaN(value) ? 0 : value;
-  value < 1 ? value = 0 : value--;
-  document.getElementById('visitors').value = value;
-}
-
- 
-</script>
