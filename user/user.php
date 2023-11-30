@@ -1,3 +1,17 @@
+<?php
+// user.php
+session_start();
+
+// Check if the user is logged in. If not, redirect to the login page.
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit();
+}
+
+$username = $_SESSION['username'];
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +37,7 @@
 </header>
 <main>
     <div class="header-with-button">
-        <h1 style="margin-left: 30px;">Logged in User</h1>
+        <h1 style="margin-left: 30px;">Logged in as <?php echo htmlspecialchars($username); ?></h1>
         <button class="manage-bookings-button">Manage Bookings</button>
     </div>
     <div id="bookingsList" class="bookings-list" style="display: none;">
@@ -81,7 +95,39 @@
         document.getElementById('exploreText').style.display = 'none';
         document.querySelector('section').style.display = 'none';
         document.getElementById('bookingsList').style.display = 'block';
+        fetchUserBookings();
+
     });
+    function fetchUserBookings() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "getUserBookings.php", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var bookings;
+                try {
+                    bookings = JSON.parse(xhr.responseText);
+                } catch (e) {
+                    console.error("Error parsing JSON: ", e);
+                    return;
+                }
+                displayBookings(bookings);
+            }
+        }
+        xhr.send();
+    }
+    function displayBookings(bookings) {
+        var bookingsList = document.getElementById('bookingsList');
+        bookingsList.innerHTML = ''; // Clear previous content
+        bookings.forEach(function (booking) {
+            var div = document.createElement('div');
+            div.className = 'booking-item';
+            div.innerHTML = '<h3>Booking ID: ' + booking.id + '</h3>' +
+                '<p>Date: ' + booking.date + '</p>' +
+                '<p>Location: ' + booking.location + '</p>';
+            bookingsList.appendChild(div);
+        });
+        bookingsList.style.display = 'block'; // Show the bookings list
+    }
 
     function searchProducts() {
         var location = document.getElementById('city').value;
@@ -171,8 +217,7 @@
                     types.forEach(function (type) {
                         var div = document.createElement('div');
                         div.className = 'rooms-list';
-                        div.innerHTML = '<h3>' + accommodationName + '</h3>' +
-                            '<h3>' + type.typeName + '</h3>' +
+                        div.innerHTML = '<h3>' + type.typeName + ' ( Type ID:' + type.AccommodationTypeID + ' )' + '</h3>' +
                             '<p>Max Guests: ' + type.max_guests + '</p>' +
                             '<p>Bedrooms: ' + type.bedrooms + '</p>' +
                             '<p>Available Rooms: ' + type.available_rooms + '</p>' +
@@ -219,7 +264,7 @@
             accommodationTypeId: accommodationTypeId,
             startDate: startDate,
             endDate: endDate,
-            username: ' GHoang92'
+            username: <?php echo $username; ?>
         };
         console.log(data);
         var xhr = new XMLHttpRequest();

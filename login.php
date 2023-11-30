@@ -24,7 +24,7 @@
   </header>
 
   <div class="login-wrapper">
-    <form action="/login" method="POST" class="login-form" style="width: 80%; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+    <form action="login_db.php" method="POST" class="login-form" style="width: 80%; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
         <h1>Login</h1>
         <div class="input-box" style="width: 100%; margin-bottom: 10px;">
             <input type="text" name="username" placeholder="Username" required>
@@ -41,7 +41,7 @@
             <input type="radio" name="role" value="admin"> Admin
             </label>
             <label>
-            <input type="radio" name="role" value="system_admin"> System admin
+            <input type="radio" name="role" value="system-admin"> System admin
             </label>
         </div>
 
