@@ -39,6 +39,8 @@ $username = $_SESSION['username'];
     <div class="header-with-button">
         <h1 style="margin-left: 30px;">Logged in as <?php echo htmlspecialchars($username); ?></h1>
         <button class="manage-bookings-button">Manage Bookings</button>
+        
+
     </div>
     <div id="bookingsList" class="bookings-list" style="display: none;">
         <!-- Bookings will be listed here -->
@@ -88,6 +90,87 @@ $username = $_SESSION['username'];
     <p>&copy; 2023 AccoManager. All rights reserved.</p>
 </footer>
 <script>
+    function fetchUserBookings() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "managebookings.php", true); // Changed to GET
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var bookings;
+                try {
+                    bookings = JSON.parse(xhr.responseText);
+                } catch (e) {
+                    console.error("Error parsing JSON: ", e);
+                    console.error("Response Text: ", xhr.responseText);
+                    return;
+                }
+                displayBookings(bookings);
+            } else {
+                console.error("AJAX request failed: ", xhr.statusText);
+            }
+        }
+    };
+    xhr.send();
+}
+
+function displayBookings(bookings) {
+    var bookingsList = document.getElementById('bookingsList');
+    bookingsList.innerHTML = ''; // Clear previous content
+    bookings.forEach(function (booking) {
+        console.log('Raw Start Date:', booking.startDate);
+    console.log('Raw End Date:', booking.endDate);
+    var formattedStartDate = new Date(booking.startDate).toLocaleDateString('en-US', {
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+    });
+    var formattedEndDate = new Date(booking.endDate).toLocaleDateString('en-US', {
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+    });
+        var div = document.createElement('div');
+        div.className = 'booking-item';
+        div.innerHTML = '<h3>Booking ID: ' + booking.bookingID + '</h3>' +
+            '<p>Price: ' + booking.price + '</p>' +
+            '<p>Start Date: ' + booking.startDate + '</p>' +
+            '<p>End Date: ' + booking.startDate + '</p>';
+        // bookingsList.appendChild(div);
+    // });
+   
+     // Create the cancel booking button
+     var cancelBtn = document.createElement('button');
+        cancelBtn.innerText = 'Cancel Booking';
+        cancelBtn.className = 'cancel-booking-button';
+        cancelBtn.onclick = function() { cancelBooking(booking.bookingID); };
+        div.appendChild(cancelBtn);
+
+        bookingsList.appendChild(div);
+    });
+    bookingsList.style.display = 'block'; // Show the bookings list
+}
+
+function cancelBooking(bookingId) {
+    if(confirm('Are you sure you want to cancel booking ID ' + bookingId + '?')) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'cancelbookings.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+    if (xhr.status === 200) {
+        alert('Booking cancelled successfully');
+      // put code here
+       
+     
+    } else {
+        // Display more detailed error information
+        alert('Error cancelling booking: ' + xhr.responseText);
+    }
+    };
+
+        xhr.send('bookingId=' + bookingId);
+    }
+}
+
     document.querySelector('.manage-bookings-button').addEventListener('click', function () {
         document.querySelector('.header-with-button').style.display = 'none';
         document.querySelector('.separator').style.display = 'none';
@@ -98,36 +181,7 @@ $username = $_SESSION['username'];
         fetchUserBookings();
 
     });
-    function fetchUserBookings() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "getUserBookings.php", true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var bookings;
-                try {
-                    bookings = JSON.parse(xhr.responseText);
-                } catch (e) {
-                    console.error("Error parsing JSON: ", e);
-                    return;
-                }
-                displayBookings(bookings);
-            }
-        }
-        xhr.send();
-    }
-    function displayBookings(bookings) {
-        var bookingsList = document.getElementById('bookingsList');
-        bookingsList.innerHTML = ''; // Clear previous content
-        bookings.forEach(function (booking) {
-            var div = document.createElement('div');
-            div.className = 'booking-item';
-            div.innerHTML = '<h3>Booking ID: ' + booking.id + '</h3>' +
-                '<p>Date: ' + booking.date + '</p>' +
-                '<p>Location: ' + booking.location + '</p>';
-            bookingsList.appendChild(div);
-        });
-        bookingsList.style.display = 'block'; // Show the bookings list
-    }
+    
 
     function searchProducts() {
         var location = document.getElementById('city').value;
