@@ -119,15 +119,50 @@ $username = $_SESSION['username'];
         var bookingsList = document.getElementById('bookingsList');
         bookingsList.innerHTML = ''; // Clear previous content
         bookings.forEach(function (booking) {
+            var formattedStartDate = formatDate(booking.startDate);
+            var formattedEndDate = formatDate(booking.endDate);
             var div = document.createElement('div');
             div.className = 'booking-item';
-            div.innerHTML = '<h3>Booking ID: ' + booking.id + '</h3>' +
-                '<p>Date: ' + booking.date + '</p>' +
-                '<p>Location: ' + booking.location + '</p>';
+            div.innerHTML = '<h3>Booking ID: ' + booking.bookingID + '</h3>' +
+                '<p>StartDate: ' + formattedStartDate + '</p>' +
+                '<p>EndDate: ' + formattedEndDate + '</p>' +
+               ' <button class="cancel-booking-button" data-bookingid="' + booking.bookingID + '">Cancel Booking</button>';
             bookingsList.appendChild(div);
+
+            div.querySelector('.cancel-booking-button').addEventListener('click', function() {
+            cancelBooking(this.getAttribute('data-bookingid'));
+            });
         });
         bookingsList.style.display = 'block'; // Show the bookings list
     }
+    function cancelBooking(bookingID) {
+    if (confirm('Are you sure you want to cancel this booking?')) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'cancelbooking.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Booking cancelled successfully');
+                fetchUserBookings(); // Refresh the list of bookings
+            } else {
+                alert('Error cancelling booking. Please try again.');
+            }
+        };
+        xhr.send('bookingID=' + bookingID);
+    }
+}   
+
+    function formatDate(dateObject) {
+    if (!dateObject) return '';
+
+    // Assuming dateObject is something like {date: '2023-03-15 00:00:00.000'}
+    var date = new Date(dateObject.date);
+    var year = date.getFullYear();
+    var month = (date.getMonth() + 1).toString().padStart(2, '0');
+    var day = date.getDate().toString().padStart(2, '0');
+
+    return year + '-' + month + '-' + day;
+}
 
     function searchProducts() {
         var location = document.getElementById('city').value;
