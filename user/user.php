@@ -215,6 +215,7 @@ $username = $_SESSION['username'];
                     availabilityInfoDiv.innerHTML = '<p>No available accommodation types found.</p>';
                 } else {
                     types.forEach(function (type) {
+                        var typeID = type.AccommodationTypeID;
                         var div = document.createElement('div');
                         div.className = 'rooms-list';
                         div.innerHTML = '<h3>' + type.typeName + ' ( Type ID:' + type.AccommodationTypeID + ' )' + '</h3>' +
@@ -225,10 +226,13 @@ $username = $_SESSION['username'];
                             '<p class="total-price">Total Price: <span class="price-amount">' + type.TotalPrice + ' €</span></p>' +
                             '<button class="book-button">BOOK</button>';
                         availabilityInfoDiv.appendChild(div);
+                        var bookButton = div.querySelector('.book-button');
+                        bookButton.setAttribute('data-typeid', typeID); // Set typeID as a data attribute
 
-                        div.querySelector('.book-button').addEventListener('click', function () {
-                            bookAccommodation(type.typeID, startDate, endDate, guests);
-                        });
+                         bookButton.addEventListener('click', function () {
+                             var typeId = this.getAttribute('data-typeid'); // Retrieve typeID from the button
+                             bookAccommodation(typeId, startDate, endDate, guests);
+                         });
                     });
                 }
                 availabilityInfoDiv.style.display = 'block'; // Show the availability info
@@ -259,12 +263,13 @@ $username = $_SESSION['username'];
         document.getElementById('visitors').value = value;
     }
 
-    function bookAccommodation(accommodationTypeId, startDate, endDate, username) {
+    function bookAccommodation(TypeID, startDate, endDate, username) {
+        var typeIdInt = parseInt(TypeID, 10);
         var data = {
-            accommodationTypeId: accommodationTypeId,
+            accommodationTypeId: TypeID,
             startDate: startDate,
             endDate: endDate,
-            username: <?php echo $username; ?>
+            username: <?php echo json_encode($username); ?>
         };
         console.log(data);
         var xhr = new XMLHttpRequest();

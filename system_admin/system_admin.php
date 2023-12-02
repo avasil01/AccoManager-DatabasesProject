@@ -62,6 +62,9 @@ function getRoomTypes($conn) {
 
 $roomTypes = getRoomTypes($conn);
 
+
+
+
 ?>
 
 
@@ -121,7 +124,8 @@ $roomTypes = getRoomTypes($conn);
           <h4>Accommodation Category</h4>
             <?php foreach ($accommodationCategories as $category): ?>
                 <label>
-                    <input type="radio" name="accommodationType" value="<?php echo htmlspecialchars($category['categoryName']); ?>">
+                    <input type="radio" name="accommodationType" value="<?php echo htmlspecialchars($category['categoryName']); ?>"
+                           onchange="fetchRoomTypesForCategory(<?php echo htmlspecialchars($category['id']); ?>)">
                     <?php echo htmlspecialchars($category['categoryName']); ?>
                 </label>
             <?php endforeach; ?>
@@ -131,12 +135,7 @@ $roomTypes = getRoomTypes($conn);
         <!-- Filter for Room Type -->
         <div class="filter-section">
           <h4>Room Type</h4>
-            <?php foreach ($roomTypes as $type): ?>
-                <label>
-                    <input type="radio" name="roomType" value="<?php echo htmlspecialchars($type['typeName']); ?>">
-                    <?php echo htmlspecialchars($type['typeName']); ?>
-                </label>
-            <?php endforeach; ?>
+
         </div>
 
         <!-- Filter for Location -->

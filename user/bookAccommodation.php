@@ -27,6 +27,7 @@ $username = $request['username']; // Assuming username is passed in the request
 $sql = "EXEC [mpanae01].[AddBooking] @accommodationTypeID = ?, @startDate = ?, @endDate = ?, @username = ?";
 $params = array($accommodationTypeId, $startDate, $endDate, $username);
 
+
 $stmt = sqlsrv_query($conn, $sql, $params);
 if ($stmt === false) {
     die(formatErrors(sqlsrv_errors()));
