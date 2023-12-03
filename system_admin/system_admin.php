@@ -121,20 +121,20 @@ $roomTypes = getRoomTypes($conn);
 
         <!-- Filter for Accommodation Type -->
         <div class="filter-section">
-          <h4>Accommodation Category</h4>
-            <?php foreach ($accommodationCategories as $category): ?>
-                <label>
-                    <input type="radio" name="accommodationType" value="<?php echo htmlspecialchars($category['categoryName']); ?>"
-                           onchange="fetchRoomTypesForCategory(<?php echo htmlspecialchars($category['id']); ?>)">
-                    <?php echo htmlspecialchars($category['categoryName']); ?>
-                </label>
-            <?php endforeach; ?>
+    <h4>Accommodation Category</h4>
+    <?php foreach ($accommodationCategories as $category): ?>
+        <label>
+            <input type="radio" style="width:5%;" name="accommodationType" value="<?php echo htmlspecialchars($category['categoryID']); ?>" onchange="loadRoomTypes(this.value)">
+            <?php echo htmlspecialchars($category['categoryName']); ?>
+        </label>
+    <?php endforeach; ?>
+</div>
 
-        </div>
 
         <!-- Filter for Room Type -->
         <div class="filter-section">
           <h4>Room Type</h4>
+          <div id="roomTypesSection">
 
         </div>
 
@@ -159,7 +159,7 @@ $roomTypes = getRoomTypes($conn);
 
   
   <div class="report-content">
-    <!-- Content for Revenue Report Here -->
+   
   </div>
 </div>
 
@@ -167,26 +167,26 @@ $roomTypes = getRoomTypes($conn);
 
     <div id="BookingStatistics" class="tabcontent">
       <h3>Booking Statistics Reports</h3>
-      <!-- Content for Booking Statistics Reports -->
+ 
     </div>
 
     <div id="OccupancyRate" class="tabcontent">
       <h3>Occupancy Rate Reports</h3>
-      <!-- Content for Occupancy Rate Reports -->
+     
     </div>
 
     <div id="RatingEvaluation" class="tabcontent">
       <h3>Rating and Evaluation Reports</h3>
-      <!-- Content for Rating and Evaluation Reports -->
+   
     </div>
 
     <div id="RoomAvailability" class="tabcontent">
       <h3>Room Availability Reports</h3>
-      <!-- Content for Room Availability Reports -->
+      
     </div>
     <div id="PerformanceReports" class="tabcontent">
       <h3>Performance Reports</h3>
-      <!-- Content for Performance Reports -->
+      
     </div>
 
 
@@ -201,46 +201,48 @@ $roomTypes = getRoomTypes($conn);
 </html>
 
 <script>
-function openTab(evt, tabName) {
-    // Declare all variables
-    var i, tabcontent, tablinks;
+function loadRoomTypes(categoryID) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "load_room_types.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            document.getElementById('roomTypesSection').innerHTML = this.responseText;
+        }
+    };
+    xhr.send("categoryID=" + categoryID);
+}
 
-    // Get all elements with class="tabcontent" and hide them
+
+
+function openTab(evt, tabName) {
+
+    var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
       tabcontent[i].style.display = "none";
     }
-
-    // Get all elements with class="tablinks" and remove the class "active"
     tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
       tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-
-    // Show the current tab, and add an "active" class to the button that opened the tab
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
   }
 
-  // Set the default open tab (optional)
-  document.getElementById("defaultOpen").click();
+  //document.getElementById("defaultOpen").click();
 
 function generateReport(reportType) {
     function generateReport(reportType) {
-        // Gather filter parameters
-        // Example: let timePeriod = document.querySelector('input[name="timePeriod"]:checked').value;
-
-        // AJAX call to PHP script
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "generate_report.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onreadystatechange = function() {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                // Handle response here
                 console.log(this.responseText);
             }
         }
-        xhr.send("reportType=" + reportType /* + Other parameters */);
+        xhr.send("reportType=" + reportType );
     }
 }
 </script>
