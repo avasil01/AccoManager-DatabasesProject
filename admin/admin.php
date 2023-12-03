@@ -133,7 +133,14 @@ $username = $_SESSION['username'];
           Meals: <input type="text" name="productMeals"><br>
           Price: <input type="number" name="productPrice"><br>
           Policy: <input type="text" name="productPolicy"><br>
-          AccommodationTypeID: <input type="number" name="productAccommodationTypeId"><br>
+          Refund Percentage: <input type="number" name="productRefundPercentage"><br>
+          Penalty Percentage: <input type="number" name="productPenaltyPercentage"><br>
+          Discount Percentage: <input type="number" name="productDiscountPercentage"><br>
+          Accommodation Type ID:
+          <select class="dropdownTypes" name="productAccommodationTypeId" id="accommodationTypeDropdown">
+          <option value="">Select Accommodation Type</option>
+    
+            </select><br>
         </div>
         <input type="submit" value="Submit">
       </form>
@@ -146,6 +153,80 @@ $username = $_SESSION['username'];
 </html>
 
 <script>
+function addNewProduct() {
+    var form = document.getElementById('newProductForm');
+    var data = {
+        productDate: form.elements['productDate'].value,
+        productRoomPrice: form.elements['productRoomPrice'].value,
+        productMeals: form.elements['productMeals'].value,
+        productPrice: form.elements['productPrice'].value,
+        productPolicy: form.elements['productPolicy'].value,
+        productRefundPercentage: form.elements['productRefundPercentage'].value,
+        productPenaltyPercentage: form.elements['productPenaltyPercentage'].value,
+        productDiscountPercentage: form.elements['productDiscountPercentage'].value,
+        productAccommodationTypeId: form.elements['productAccommodationTypeId'].value
+        // Add other form elements here as needed
+    };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'AddProduct.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                console.log('Product added successfully');
+                // Additional actions upon success, like closing the modal or refreshing the page
+            } else {
+                console.error('Error adding product:', response.error);
+                // Error handling
+            }
+        }
+    };
+    xhr.send(JSON.stringify(data));
+}
+
+// Event listener for your form's submit button
+document.addEventListener('DOMContentLoaded', function() {
+    var submitButton = document.querySelector('.button-submit-product'); // Update this selector to match your submit button
+    submitButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        addNewProduct();
+    });
+});
+
+
+
+
+function fetchAccommodationTypes() {
+    var data = {
+        username: <?php echo json_encode($username); ?>
+    };
+    console.log("Request Data:", data); // Log the request data
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'getUsersTypes.php', true);
+    xhr.onload = function() {
+        console.log("Response Received:", this.responseText); // Log the response text
+        if (this.status == 200) {
+            var types = JSON.parse(this.responseText);
+            console.log("Parsed Types:", types); // Log the parsed types
+            var dropdown = document.getElementById('accommodationTypeDropdown');
+            types.forEach(function(type) {
+                var option = document.createElement('option');
+                option.value = type.AccommodationTypeID;
+                option.textContent = type.Name;
+                dropdown.appendChild(option);
+            });
+        } else {
+            console.error("Error fetching data:", this.status); // Log any errors
+        }
+    };
+    xhr.send(JSON.stringify(data));
+}
+
+
+
 function submitServices(accommodationId) {
   var serviceInputs = document.querySelectorAll('input[name="offeredServices[]"]');
     console.log("Service Inputs:", serviceInputs); // Check if inputs are collected
@@ -240,6 +321,10 @@ function closeModal_roomtype() {
     modal.style.display = 'none';
 }
 
+function closeModal_product() {
+    var modal = document.getElementById('newProductModal');
+    modal.style.display = 'none';
+}
 
 function closeModal() {
     var modal = document.getElementById('newAccommodationModal');
@@ -373,6 +458,7 @@ function addMealInput() {
 
 function createNewProduct() {
     document.getElementById('newProductModal').style.display = 'block';
+    fetchAccommodationTypes();
   }
 
   function addProductTermInput() {
