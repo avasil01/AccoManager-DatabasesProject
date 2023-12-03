@@ -1,3 +1,9 @@
+.service-input {
+  margin-top: 10px;
+  display: block; /* Ensures each input appears on a new line */
+  /* Other styling as needed */
+}
+
 .booking-item {
   position: relative;
   border: 1px solid #ddd;

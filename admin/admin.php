@@ -1,3 +1,19 @@
+<?php
+// Start the session
+session_start();
+
+if (!isset($_SESSION['username'])) {
+  header('Location: ../login.php');
+  exit();
+}
+
+// Now you can use session variables, like the username
+$username = $_SESSION['username'];
+
+// ... rest of your admin.php code ...
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +41,7 @@
   </header>
 
   <main>
-    <h1 style="margin-left: 30px;">Logged in as Accommodation Admin</h1>
+    <h1 style="margin-left: 30px;">Logged in as <?php echo $username; ?></h1>
 
     <!-- Tab links -->
     <div class="tab" style="display: flex; justify-content: center; gap: 15px;">
@@ -71,19 +87,24 @@
           Accommodation Category: <input type="text" name="accommodationCategory"><br>
           Physical Location (Address): <input type="text" name="accommodationAddress"><br>
           Geographic Coordinates: <input type="text" name="geographicCoordinates"><br>
+          Town: <input type="text" name="town"><br> 
+          <input type="text" name="username" readonly  value="<?php echo $username; ?>">
           <h3>Details of Offered Services:</h3>
-          <input type="text" name="offeredServices">
-          <button type="button" onclick="addServiceInput()">+</button><br>
+          <div id="serviceInputsContainer">
+          <input type="text" name="offeredServices[]" class="service-input" placeholder="Service Name">
+          <button type="button" onclick="addServiceInput()">+</button>
+          </div>
         </div>
-        <input type="submit" value="Submit">
+        
       </form>
+      <button class="button-submit-accommodation" type="submit">Submit</button>
     </div>
   </div>
 
      <!-- add a new room type pop up form -->
   <div id="newRoomTypeModal" class="modal">
     <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
-      <span class="close" onclick="closeModal('newRoomTypeModal')">&times;</span>
+      <span class="close" onclick="closeModal()">&times;</span>
       <h2>Add New Room Type</h2>
       <form id="newRoomTypeForm">
         <div>
@@ -139,6 +160,155 @@
 </html>
 
 <script>
+function submitServices(accommodationId) {
+    var serviceInputs = document.querySelectorAll('input[name="offeredServices"]');
+    serviceInputs.forEach(function(serviceInput) {
+        
+        var serviceName = serviceInput.value;
+        if (serviceName) {
+            var data = {
+                accommodationId: accommodationId,
+                serviceName: serviceName
+            };
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'addservice.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/json'); 
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (!response.success) {
+                        alert('Error adding service: ' + response.error);
+                    }
+                } else {
+                    alert('An error occurred while sending the request for service addition.');
+                }
+            };
+
+            xhr.send(JSON.stringify(data));
+        }
+    });
+}
+
+
+function addServiceInput() {
+    var container = document.getElementById('serviceInputsContainer');
+    var newInput = document.createElement('input');
+    newInput.type = 'text';
+    newInput.name = 'offeredServices[]'; // Using array notation
+    newInput.className = 'service-input';
+    newInput.placeholder = 'Service Name';
+    container.appendChild(newInput);
+}
+
+
+
+function submitRoomType() {
+    var form = document.getElementById('newRoomTypeForm');
+
+    // Manually extracting values from the form
+    var data = {
+        roomType: form.elements['roomType'].value,
+        maxGuests: form.elements['maxGuests'].value,
+        size: form.elements['size'].value,
+        featuresProvided: form.elements['featuresProvided'].value,
+        priceCategory: form.elements['priceCategory'].value,
+        terms: form.elements['terms'].value,
+        refundPercentage: form.elements['refundPercentage'].value,
+        meals: form.elements['meals'].value
+        // Add other fields here if necessary
+    };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'addroomtype.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/json'); 
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                alert('Room type added successfully');
+                location.reload();
+            } else {
+                alert('Error adding room type: ' + response.error);
+            }
+        } else {
+            alert('An error occurred while sending the request.');
+        }
+    };
+
+    xhr.send(JSON.stringify(data)); 
+}
+
+// Add event listener for the room type submit button
+document.addEventListener('DOMContentLoaded', function () {
+    var submitButton = document.querySelector('.button-submit-roomtype'); // Update this class or id according to your HTML
+    submitButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        submitRoomType();
+    });
+});
+
+
+
+function closeModal() {
+    var modal = document.getElementById('newAccommodationModal');
+    modal.style.display = 'none';
+}
+
+function submitAccommodation() {
+  var form = document.getElementById('newAccommodationForm');
+
+// Manually extracting values from the form
+var data = {
+    accommodationId: form.elements['accommodationId'].value,
+    accommodationName: form.elements['accommodationName'].value,
+    contactFullName: form.elements['contactFullName'].value,
+    contactEmail: form.elements['contactEmail'].value,
+    contactPhoneNumber: form.elements['contactPhoneNumber'].value,
+    accommodationCategory: form.elements['accommodationCategory'].value,
+    accommodationAddress: form.elements['accommodationAddress'].value,
+    geographicCoordinates: form.elements['geographicCoordinates'].value,
+    town: form.elements['town'].value,
+    username: form.elements['username'].value
+    // Add other fields here if necessary
+};
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'addaccommodation.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/json'); // Set the content type to JSON
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+              console.log(response);
+                alert('Accommodation added successfully');
+                submitServices(form.elements['accommodationId'].value);
+                location.reload(); // Refresh the page
+            } else {
+                alert('Error adding accommodation: ' + response.error);
+            }
+        } else {
+            alert('An error occurred while sending the request.');
+        }
+    };
+
+    xhr.send(JSON.stringify(data)); // Send the JSON string
+}
+
+
+// Adding event listener to the submit button
+document.addEventListener('DOMContentLoaded', function () {
+    var submitButton = document.querySelector('.button-submit-accommodation');
+    submitButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        submitAccommodation();
+    });
+});
+
+
 function openTab(evt, tabName) {
   var i, tabcontent, tablinks;
   
@@ -177,27 +347,24 @@ function createNewAccommodation() {
     document.getElementById('newAccommodationModal').style.display = 'none';
   }
 
-  function addServiceInput() {
-    var form = document.getElementById('newAccommodationForm');
-    var input = document.createElement('input');
-    input.type = 'text';
-    input.name = 'offeredServices';
-    input.style.marginTop = "10px"; // Optional, for spacing between inputs
+//   function addServiceInput() {
+//     var form = document.getElementById('newAccommodationForm');
+//     var input = document.createElement('input');
+//     input.type = 'text';
+//     input.name = 'offeredServices';
+//     input.style.marginTop = "10px"; // Optional, for spacing between inputs
 
-    // Find the submit button in the form
-    var submitButton = form.querySelector('input[type=submit]');
+//     // Find the submit button in the form
+//     var submitButton = form.querySelector('input[type=submit]');
 
-    // Insert the new input field before the submit button
-    form.insertBefore(input, submitButton);
-}
+//     // Insert the new input field before the submit button
+//     form.insertBefore(input, submitButton);
+// }
 
 function createNewRoomType() {
     document.getElementById('newRoomTypeModal').style.display = 'block';
   }
 
-  function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-  }
 
   function addFeatureInput() {
     var form = document.getElementById('newRoomTypeForm');
