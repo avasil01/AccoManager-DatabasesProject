@@ -2,12 +2,11 @@
 // user.php
 session_start();
 
-// Your database connection details
-$serverName = "mssql.cs.ucy.ac.cy"; // Update with your server name
+$serverName = "mssql.cs.ucy.ac.cy"; 
 $connectionOptions = array(
-    "Database" => "mpanae01", // Update with your database name
-    "Uid" => "mpanae01", // Update with your database username
-    "PWD" => "PVTmdk11" // Update with your database password
+    "Database" => "mpanae01", 
+    "Uid" => "mpanae01", 
+    "PWD" => "PVTmdk11"
 );
 
 $conn = sqlsrv_connect($serverName, $connectionOptions);
@@ -15,8 +14,6 @@ if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 
-
-// Check if the user is logged in. If not, redirect to the login page.
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
     exit();
@@ -24,11 +21,9 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-
-// Function to fetch accommodation categories
 function getAccommodationCategories($conn) {
     $categories = array();
-    $sql = "SELECT * FROM dbo.[ACCOMMODATION CATEGORY]"; // Adjust SQL as per your table structure
+    $sql = "SELECT * FROM dbo.[ACCOMMODATION CATEGORY]"; 
     $stmt = sqlsrv_query($conn, $sql);
 
     if ($stmt === false) {
@@ -36,7 +31,7 @@ function getAccommodationCategories($conn) {
     }
 
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        $categories[] = $row; // Assuming $row contains category data
+        $categories[] = $row;
     }
 
     return $categories;
@@ -46,7 +41,7 @@ $accommodationCategories = getAccommodationCategories($conn);
 
 function getRoomTypes($conn) {
     $roomTypes = array();
-    $sql = "SELECT * FROM dbo.[ACCOMMODATION_TYPE]"; // Adjust SQL as per your table structure
+    $sql = "SELECT * FROM dbo.[ACCOMMODATION_TYPE]";
     $stmt = sqlsrv_query($conn, $sql);
 
     if ($stmt === false) {
@@ -54,7 +49,7 @@ function getRoomTypes($conn) {
     }
 
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        $roomTypes[] = $row; // Assuming $row contains room type data
+        $roomTypes[] = $row;
     }
 
     return $roomTypes;
@@ -62,12 +57,7 @@ function getRoomTypes($conn) {
 
 $roomTypes = getRoomTypes($conn);
 
-
-
-
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -97,7 +87,6 @@ $roomTypes = getRoomTypes($conn);
   <main>
     <h1 style="margin-left: 30px;">Logged in as <?php echo htmlspecialchars($username);?></h1>
 
-    <!-- Tab links -->
     <div class="tab" style="display: flex; justify-content: center; gap: 15px;">
       <button class="tablinks" onclick="openTab(event, 'RevenueReport')">Revenue Report</button>
       <button class="tablinks" onclick="openTab(event, 'BookingStatistics')">Booking Statistics Reports</button>
@@ -107,19 +96,17 @@ $roomTypes = getRoomTypes($conn);
       <button class="tablinks" onclick="openTab(event, 'PerformanceReports')">Performance Reports</button>
     </div>
 
-    <!-- Tab content -->
     <div id="RevenueReport" class="tabcontent">
       <div class="filter-container">
-        <!-- Filter for Time Periods -->
+
         <div class="filter-section">
           <h4>Time Periods</h4>
-          <label><input type="radio" name="timePeriod" value="Daily"> Daily</label>
-          <label><input type="radio" name="timePeriod" value="Weekly"> Weekly</label>
-          <label><input type="radio" name="timePeriod" value="Quarterly"> Quarterly</label>
-          <label><input type="radio" name="timePeriod" value="Yearly"> Yearly</label>
+          <label><input type="radio" style="width:auto;" name="timePeriod" value="Daily"> Daily</label>
+          <label><input type="radio" style="width:auto;" name="timePeriod" value="Weekly"> Weekly</label>
+          <label><input type="radio" style="width:auto;" name="timePeriod" value="Quarterly"> Quarterly</label>
+          <label><input type="radio" style="width:auto;" name="timePeriod" value="Yearly"> Yearly</label>
         </div>
 
-        <!-- Filter for Accommodation Type -->
         <div class="filter-section">
     <h4>Accommodation Category</h4>
     <?php foreach ($accommodationCategories as $category): ?>
@@ -131,28 +118,25 @@ $roomTypes = getRoomTypes($conn);
 </div>
 
 
-        <!-- Filter for Room Type -->
         <div class="filter-section">
           <h4>Room Type</h4>
           <div id="roomTypesSection">
 
         </div>
 
-        <!-- Filter for Location -->
         <div class="filter-section">
           <h4>Location</h4>
-          <label><input type="radio" name="location" value="Nicosia"> Nicosia</label>
-          <label><input type="radio" name="location" value="Paphos"> Paphos</label>
-          <label><input type="radio" name="location" value="Larnaca"> Larnaca</label>
-          <label><input type="radio" name="location" value="Larnaca"> Limassol</label>
-          <label><input type="radio" name="location" value="Larnaca"> Troodos</label>
-          <label><input type="radio" name="location" value="Larnaca"> Ayia Napa</label>
+          <label><input type="radio" style="width:auto;" name="location" value="Nicosia"> Nicosia</label>
+          <label><input type="radio" style="width:auto;" name="location" value="Paphos"> Paphos</label>
+          <label><input type="radio" style="width:auto;" name="location" value="Larnaca"> Larnaca</label>
+          <label><input type="radio" style="width:auto;" name="location" value="Larnaca"> Limassol</label>
+          <label><input type="radio" style="width:auto;" name="location" value="Larnaca"> Troodos</label>
+          <label><input type="radio" style="width:auto;" name="location" value="Larnaca"> Ayia Napa</label>
          
         </div>
   </div>
 
   <div class="report-content">
-    <!-- Content for Revenue Report Here -->
   </div>
         <button onclick="generateRevenueReport('RevenueReport')">GENERATE</button>
 </div>
@@ -189,9 +173,7 @@ $roomTypes = getRoomTypes($conn);
       
     </div>
 
-
-
-    
+ 
   </main>
 
   <footer>
@@ -230,7 +212,7 @@ function openTab(evt, tabName) {
     evt.currentTarget.className += " active";
   }
 
-  //document.getElementById("defaultOpen").click();
+  
 
 function generateReport(reportType) {
     function generateReport(reportType) {

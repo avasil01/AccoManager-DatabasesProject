@@ -1,13 +1,12 @@
 <?php
 
-$serverName = "mssql.cs.ucy.ac.cy"; // update this
+$serverName = "mssql.cs.ucy.ac.cy";
 $connectionOptions = array(
-    "Database" => "mpanae01", // update this
-    "Uid" => "mpanae01", // update this
-    "PWD" => "PVTmdk11" // update this
+    "Database" => "mpanae01",
+    "Uid" => "mpanae01", 
+    "PWD" => "PVTmdk11" 
 );
 
-// Establish the connection
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 if ($conn === false) {
     die(formatErrors(sqlsrv_errors()));
@@ -20,8 +19,7 @@ $request = json_decode($input, true);
 $accommodationId = $request['accommodationId'];
 $serviceName = $request['serviceName'];
 
-// Prepare and execute SQL query
-$sql = "EXEC mpanae01.[AddService] ?, ?;"; // Update your stored procedure and parameters
+$sql = "EXEC mpanae01.[AddService] ?, ?;"; 
 $params = array($accommodationId, $serviceName);
 
 $stmt = sqlsrv_query($conn, $sql, $params);

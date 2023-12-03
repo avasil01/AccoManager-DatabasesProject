@@ -13,7 +13,7 @@ $connectionOptions = array(
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 if ($conn === false) {
     die(formatErrors(sqlsrv_errors()));
-}
+} 
 
 
 $sql = "SELECT * FROM dbo.[ACCOMMODATION_TYPE] AT INNER JOIN dbo.[ACCOMMODATION] A ON A.legal_id = AT.accommodation INNER JOIN dbo.[ACCOMMODATION CATEGORY] AC ON AC.categoryID = A.categoryID WHERE AC.categoryID = ?; ;";

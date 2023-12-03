@@ -1,28 +1,22 @@
 <?php
 // GetRoomType.php
 
-// Database connection parameters
-$serverName = "mssql.cs.ucy.ac.cy"; // update this
+$serverName = "mssql.cs.ucy.ac.cy"; 
 $connectionOptions = array(
-    "Database" => "mpanae01", // update this
-    "Uid" => "mpanae01", // update this
-    "PWD" => "PVTmdk11" // update this
+    "Database" => "mpanae01", 
+    "Uid" => "mpanae01", 
+    "PWD" => "PVTmdk11" 
 );
 
-// Connect to the database
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 
-// Check if both Room Type and Username are provided
 if (isset($_POST['roomType']) && isset($_POST['username'])) {
     $roomType = $_POST['roomType'];
     $username = $_POST['username'];
 
-    // Adjust the SQL query to include the username in the criteria
-    // This example assumes a relationship between the accommodation type and the user.
-    // Update the JOIN and WHERE clauses according to your database schema.
     $sql = "SELECT * FROM dbo.ACCOMMODATION_TYPE at
             JOIN dbo.ACCOMMODATION a ON at.accommodation = a.legal_id
             JOIN dbo.[USER] u ON a.owner = u.id

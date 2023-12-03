@@ -8,16 +8,13 @@ $connectionOptions = array(
     "PWD" => "PVTmdk11"
 );
 
-// Create database connection
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
-// Check connection
 if ($conn === false) {
     echo json_encode(['success' => false, 'error' => print_r(sqlsrv_errors(), true)]);
     exit;
 }
 
-// Extract form data
 $params = [
     $_POST["accommodationId"],
     $_POST["accommodationName"],
@@ -31,7 +28,6 @@ $params = [
     $_POST["username"]
 ];
 
-// Call the stored procedure
 $sql = "EXEC ModifyAccommodation ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
 $stmt = sqlsrv_prepare($conn, $sql, $params);
 

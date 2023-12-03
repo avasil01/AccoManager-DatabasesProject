@@ -1,5 +1,5 @@
 <?php
-// Start the session
+
 session_start();
 
 if (!isset($_SESSION['username'])) {
@@ -7,10 +7,8 @@ if (!isset($_SESSION['username'])) {
   exit();
 }
 
-// Now you can use session variables, like the username
 $username = $_SESSION['username'];
 
-// ... rest of your admin.php code ...
 ?>
 
 
@@ -43,14 +41,12 @@ $username = $_SESSION['username'];
   <main>
     <h1 style="margin-left: 30px;">Logged in as <?php echo $username; ?></h1>
 
-    <!-- Tab links -->
     <div class="tab" style="display: flex; justify-content: center; gap: 15px;">
       <button class="tablinks" onclick="openTab(event, 'Accommodation')">Accommodation Management</button>
       <button class="tablinks" onclick="openTab(event, 'RoomType')">Room Type Management</button>
       <button class="tablinks" onclick="openTab(event, 'Product')">Product Management</button>
     </div>
 
-    <!-- Tab content -->
     <div id="Accommodation" class="tabcontent">
       <h3>Accommodation Management</h3>
       <button class="blue-button" onclick="createNewAccommodation()">+ Add New Accommodation</button>
@@ -103,7 +99,6 @@ $username = $_SESSION['username'];
   </div>
 
 
-  <!-- add a new accommodation pop up form -->
   <div id="newAccommodationModal" class="modal">
     <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
       <span class="close" onclick="closeModal()">&times;</span>
@@ -176,7 +171,6 @@ $username = $_SESSION['username'];
     </div>
   </div>
 
-  <!-- add a new product type pop up form -->
   <div id="newProductModal" class="modal">
     <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
       <span class="close" onclick="closeModal_product()">&times;</span>
@@ -209,7 +203,7 @@ $username = $_SESSION['username'];
 
 <script>
 function modifyRoomTypeData() {
-    // Retrieve values from the form
+
     var form = document.getElementById('ModifyRoomTypeForm');
     var roomType = form.elements['roomTypeModify'].value;
     var roomName = form.elements['roomNameModify'].value;
@@ -219,7 +213,6 @@ function modifyRoomTypeData() {
     var accommodationId = form.elements['accommodationIdModify'].value;
     var availableRooms = form.elements['availableroomsModify'].value;
 
-    // Create the data object
     var data = {
         roomTypeModify: roomType,
         roomNameModify: roomName,
@@ -230,7 +223,6 @@ function modifyRoomTypeData() {
         availableroomsModify: availableRooms
     };
 
-    // Send the request
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'ModifyRoomType.php', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -249,10 +241,8 @@ function modifyRoomTypeData() {
     xhr.send(JSON.stringify(data));
 }
 
-
-// Event listener for the modify room type button
 document.querySelector('.button-modify-roomtype').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
     modifyRoomTypeData();
 });
 
@@ -297,7 +287,6 @@ function populateRoomTypeForm(data) {
     document.querySelector('input[name="accommodationIdModify"]').value = data.accommodation || '';
     document.querySelector('input[name="availableroomsModify"]').value = data.available_rooms || '';
     document.querySelector('input[name="roomNameModify"]').value = data.name || '';
-    // Add more fields as necessary
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -328,7 +317,6 @@ function submitModifyAccommodationForm() {
     xhr.send(formData);
 }
 
-// Add event listener for the submit button
 document.querySelector('.button-modify-accommodation').addEventListener('click', function(event) {
     event.preventDefault();
     submitModifyAccommodationForm();
@@ -374,7 +362,6 @@ function populateAccommodationForm(data) {
 
 document.addEventListener('DOMContentLoaded', function() {
     fetchAccommodationData();
-    // other event listeners
 });
 
 
@@ -390,7 +377,6 @@ function addNewProduct() {
         productPenaltyPercentage: form.elements['productPenaltyPercentage'].value,
         productDiscountPercentage: form.elements['productDiscountPercentage'].value,
         productAccommodationTypeId: form.elements['productAccommodationTypeId'].value
-        // Add other form elements here as needed
     };
 
     var xhr = new XMLHttpRequest();
@@ -401,19 +387,16 @@ function addNewProduct() {
             var response = JSON.parse(xhr.responseText);
             if (response.success) {
                 alert('Product added successfully');
-                // Additional actions upon success, like closing the modal or refreshing the page
             } else {
                 alert('Error adding product:', response.error);
-                // Error handling
             }
         }
     };
     xhr.send(JSON.stringify(data));
 }
 
-// Event listener for your form's submit button
 document.addEventListener('DOMContentLoaded', function() {
-    var submitButton = document.querySelector('.submit-new-product'); // Update this selector to match your submit button
+    var submitButton = document.querySelector('.submit-new-product'); 
     submitButton.addEventListener('click', function(event) {
         event.preventDefault();
         addNewProduct();
@@ -427,15 +410,15 @@ function fetchAccommodationTypes() {
     var data = {
         username: <?php echo json_encode($username); ?>
     };
-    console.log("Request Data:", data); // Log the request data
+    console.log("Request Data:", data); 
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'getUsersTypes.php', true);
     xhr.onload = function() {
-        console.log("Response Received:", this.responseText); // Log the response text
+        console.log("Response Received:", this.responseText); 
         if (this.status == 200) {
             var types = JSON.parse(this.responseText);
-            console.log("Parsed Types:", types); // Log the parsed types
+            console.log("Parsed Types:", types); 
             var dropdown = document.getElementById('accommodationTypeDropdown');
             types.forEach(function(type) {
                 var option = document.createElement('option');
@@ -444,7 +427,7 @@ function fetchAccommodationTypes() {
                 dropdown.appendChild(option);
             });
         } else {
-            console.error("Error fetching data:", this.status); // Log any errors
+            console.error("Error fetching data:", this.status); 
         }
     };
     xhr.send(JSON.stringify(data));
@@ -454,7 +437,7 @@ function fetchAccommodationTypes() {
 
 function submitServices(accommodationId) {
   var serviceInputs = document.querySelectorAll('input[name="offeredServices[]"]');
-    console.log("Service Inputs:", serviceInputs); // Check if inputs are collected
+    console.log("Service Inputs:", serviceInputs); 
     serviceInputs.forEach(function(serviceInput) {
         
         var serviceName = serviceInput.value;
@@ -489,7 +472,7 @@ function addServiceInput() {
     var container = document.getElementById('serviceInputsContainer');
     var newInput = document.createElement('input');
     newInput.type = 'text';
-    newInput.name = 'offeredServices[]'; // Using array notation
+    newInput.name = 'offeredServices[]'; 
     newInput.className = 'service-input';
     newInput.placeholder = 'Service Name';
     container.appendChild(newInput);
@@ -502,7 +485,6 @@ function addServiceInput() {
 function submitRoomType() {
     var form = document.getElementById('newRoomTypeForm');
 
-    // Manually extracting values from the form
     var data = {
         roomType: form.elements['roomType'].value,
         maxGuests: form.elements['maxGuests'].value,
@@ -533,9 +515,9 @@ function submitRoomType() {
     xhr.send(JSON.stringify(data)); 
 }
 
-// Add event listener for the room type submit button
+
 document.addEventListener('DOMContentLoaded', function () {
-    var submitButton = document.querySelector('.button-submit-roomtype'); // Update this class or id according to your HTML
+    var submitButton = document.querySelector('.button-submit-roomtype'); 
     submitButton.addEventListener('click', function (event) {
         event.preventDefault();
         submitRoomType();
@@ -568,7 +550,7 @@ function closeModal() {
 function submitAccommodation() {
   var form = document.getElementById('newAccommodationForm');
 
-// Manually extracting values from the form
+
 var data = {
     accommodationId: form.elements['accommodationId'].value,
     accommodationName: form.elements['accommodationName'].value,
@@ -580,12 +562,11 @@ var data = {
     geographicCoordinates: form.elements['geographicCoordinates'].value,
     town: form.elements['town'].value,
     username: form.elements['username'].value
-    // Add other fields here if necessary
 };
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'addaccommodation.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/json'); // Set the content type to JSON
+    xhr.setRequestHeader('Content-Type', 'application/json'); 
 
     xhr.onload = function() {
         if (xhr.status === 200) {
@@ -594,7 +575,7 @@ var data = {
               console.log(response);
                 alert('Accommodation added successfully');
                 submitServices(form.elements['accommodationId'].value);
-                location.reload(); // Refresh the page
+                location.reload(); 
             } else {
                 alert('Error adding accommodation: ' + response.error);
             }
@@ -603,11 +584,9 @@ var data = {
         }
     };
 
-    xhr.send(JSON.stringify(data)); // Send the JSON string
+    xhr.send(JSON.stringify(data)); 
 }
 
-
-// Adding event listener to the submit button
 document.addEventListener('DOMContentLoaded', function () {
     var submitButton = document.querySelector('.button-submit-accommodation');
     submitButton.addEventListener('click', function (event) {
@@ -646,7 +625,6 @@ function createNewProduct() {
   alert("Create new product functionality will be implemented here.");
 }
 
-//add new accommodation functions
 function createNewAccommodation() {
     document.getElementById('newAccommodationModal').style.display = 'block';
   }
@@ -668,7 +646,7 @@ function addTermInput() {
     var form = document.getElementById('newRoomTypeForm');
     var lastTermInput = form.querySelectorAll('.termsInput').length > 0 ?
                         form.querySelectorAll('.termsInput') :
-                        [form.querySelector('input[name="priceCategory"]')]; // Fallback to price category input
+                        [form.querySelector('input[name="priceCategory"]')]; 
     var newTermInput = document.createElement('input');
     newTermInput.type = 'text';
     newTermInput.name = 'terms';
@@ -683,7 +661,7 @@ function addMealInput() {
     var form = document.getElementById('newRoomTypeForm');
     var lastMealInput = form.querySelectorAll('input[name="meals"]').length > 0 ?
                         form.querySelectorAll('input[name="meals"]') :
-                        [form.querySelector('input[name="terms"]')]; // Fallback to terms input
+                        [form.querySelector('input[name="terms"]')];
     var newMealInput = document.createElement('input');
     newMealInput.type = 'text';
     newMealInput.name = 'meals';
@@ -702,7 +680,7 @@ function createNewProduct() {
     var form = document.getElementById('newProductForm');
     var lastTermInput = form.querySelectorAll('.productTermsInput').length > 0 ?
                         form.querySelectorAll('.productTermsInput') :
-                        [form.querySelector('input[name="productRoomPrice"]')]; // Fallback to room price input
+                        [form.querySelector('input[name="productRoomPrice"]')]; 
     var newTermInput = document.createElement('input');
     newTermInput.type = 'text';
     newTermInput.name = 'productTerms';
@@ -717,7 +695,7 @@ function createNewProduct() {
     var form = document.getElementById('newProductForm');
     var lastMealInput = form.querySelectorAll('input[name="productMeals"]').length > 0 ?
                         form.querySelectorAll('input[name="productMeals"]') :
-                        [form.querySelector('input[name="productTerms"]')]; // Fallback to terms input
+                        [form.querySelector('input[name="productTerms"]')]; 
     var newMealInput = document.createElement('input');
     newMealInput.type = 'text';
     newMealInput.name = 'productMeals';

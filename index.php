@@ -21,12 +21,7 @@
             <option value="gr">Greek</option>
           </select>
         </li>
-        <!-- <li>
-          <label for="currency-select">Currency:</label>
-          <select name="currency" id="currency-select">
-            <option value="usd">USD</option>
-          </select>
-        </li> -->
+       
         <li><button id="loginBtn" class="button-19" role="button">Login</button></li>
         <li><button id="signupBtn" class="button-19" role="button">Sign Up</button></li>
       </ul>
@@ -77,7 +72,7 @@
 
 <script>
 function searchProducts() {
-    // Example data to send - adjust according to your actual input fields
+    
     var location = document.getElementById('city').value;
     var startDate = document.getElementById('start-date').value;
     var endDate = document.getElementById('end-date').value;
@@ -93,13 +88,13 @@ function searchProducts() {
         return;
     }
 
-    // AJAX request to PHP
+    
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "searchproducts.php", true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-           console.log(xhr.responseText); // Check the actual response
+           console.log(xhr.responseText); 
         var results;
         try {
             results = JSON.parse(xhr.responseText);
@@ -111,25 +106,25 @@ function searchProducts() {
             resultsContainer.innerHTML = '';
 
         if (results.length > 0) {
-               // Create and inject result elements
+               
                results.forEach(function (result) {
                     var resultElement = document.createElement('div');
                     resultElement.className = 'result-item';
 
-                    // Construct the inner HTML for each result
+                    
                     resultElement.innerHTML = 
                         '<h3>' + result.name + ' (ID: ' + result.legal_id + ')</h3>' +
                         '<p>Price: ' + result.price + '</p>' +
                         '<p>Address: ' + result.address + '</p>' +
                         '<p>Coordinates: ' + result.coordinates + '</p>' +
                         '<p>Contact Number: ' + result.contact_number + '</p>' +
-                        '<button class="availability-button">See Availability</button>'; // Added button
+                        '<button class="availability-button">See Availability</button>'; 
 
                     resultsContainer.appendChild(resultElement);
                     
                     var availabilityButton = resultElement.querySelector('.availability-button');
 
-                    // Add click event listener to the button
+                    
                     availabilityButton.addEventListener('click', function() {
                         showAvailability(resultElement, result.name);
                     });
@@ -137,7 +132,7 @@ function searchProducts() {
                     resultsContainer.appendChild(resultElement);
                 }); 
             } else {
-                // No results found
+                
                 document.getElementById('results').innerHTML = '<p>No results found.</p>';
             }
 
@@ -146,15 +141,13 @@ function searchProducts() {
 
         
         function showAvailability(resultElement, accommodationName) {
-            // Hide the selected accommodation
+            
             resultElement.style.display = 'none';
 
-            // Create a new list for the accommodation rooms (empty for now)
             var roomsList = document.createElement('div');
             roomsList.className = 'rooms-list';
             roomsList.innerHTML = '<h3>' + accommodationName + '</h3>';
 
-            // Append the new list to the results container
             var resultsContainer = document.getElementById('results');
             resultsContainer.appendChild(roomsList);
         }
@@ -164,36 +157,6 @@ function searchProducts() {
 </script>
 
 
-<!-- 
-<div id="signupModal" class="modal">
-  
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <form action="signup_process.php" method="post">
-     
-      <input type="text" name="username" placeholder="Username">
-      <input type="password" name="password" placeholder="Password">
-      <input type="submit" value="Sign Up">
-    </form>
-  </div>
-</div>
-
-
-
-
-<div id="loginModal" class="modal">
- 
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <form action="login_process.php" method="post">
-      
-      <input type="text" name="username" placeholder="Username">
-      <input type="password" name="password" placeholder="Password">
-      <input type="submit" value="Login">
-    </form>
-  </div>
-</div> -->
-
 
 
 </html>
@@ -201,55 +164,18 @@ function searchProducts() {
 
 
 <script>
-// Get the login button
+
 var loginBtn = document.getElementById("loginBtn");
 
-// When the user clicks on the login button, redirect to login.php
 loginBtn.onclick = function() {
   window.location.href = "login.php";
 }
 var signupBtn = document.getElementById("signupBtn");
 
-// When the user clicks on the login button, redirect to login.php
 signupBtn.onclick = function() {
   window.location.href = "signup.php";
 }
 
-// // Get the modal
-// var modal = document.getElementById("signupModal");
-
-// // Get the button that opens the modal
-// var btn = document.getElementById("signupBtn");
-
-// // Get the <span> element that closes the modal
-// var span = document.getElementsByClassName("close")[0];
-
-// // When the user clicks on the button, open the modal 
-// btn.onclick = function() {
-//   modal.style.display = "block";
-// }
-
-// // When the user clicks on <span> (x), close the modal
-// span.onclick = function() {
-//   modal.style.display = "none";
-// }
-
-// // When the user clicks anywhere outside of the modal, close it
-// window.onclick = function(event) {
-//   if (event.target == modal) {
-//     modal.style.display = "none";
-//   }
-// }
-
-
-// // // Get the modal
-// // var modal = document.getElementById("loginModal");
-
-// // // Get the button that opens the modal
-// // var btn = document.getElementById("loginBtn");
-
-// // Get the <span> element that closes the modal
-// var span = document.getElementsByClassName("close")[0];
 function incrementValue() {
   var value = parseInt(document.getElementById('visitors').value, 10);
   value = isNaN(value) ? 0 : value;

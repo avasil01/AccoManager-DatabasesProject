@@ -2,14 +2,14 @@
 // addaccommodation.php
 
 // Database connection details
-$serverName = "mssql.cs.ucy.ac.cy"; // update this
+$serverName = "mssql.cs.ucy.ac.cy"; 
 $connectionOptions = array(
-    "Database" => "mpanae01", // update this
-    "Uid" => "mpanae01", // update this
-    "PWD" => "PVTmdk11" // update this
+    "Database" => "mpanae01", 
+    "Uid" => "mpanae01", 
+    "PWD" => "PVTmdk11" 
 );
 
-// Establish the connection
+
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 if ($conn === false) {
     die(formatErrors(sqlsrv_errors()));
@@ -29,7 +29,7 @@ $categoryName = $request['accommodationCategory'];
 $address = $request['accommodationAddress'];
 $coordinates = $request['geographicCoordinates'];
 $town = $request['town'];
-$username = $request['username']; // Assuming username is included in the JSON payload
+$username = $request['username']; 
 
 // Prepare and execute SQL query
 $sql = "EXEC dbo.[AddAccommodation] ?, ?, ?, ?, ?, ?, ?, ?, ?, ?;";
@@ -42,12 +42,11 @@ if ($stmt === false) {
     echo json_encode(["success" => "Accommodation added successfully"]);
 }
 
-// Close the connection
+
 sqlsrv_close($conn);
 
-// Function to format errors
+
 function formatErrors($errors) {
-    // Error formatting function
-    // ...
+    
 }
 ?>

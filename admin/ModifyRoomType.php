@@ -7,18 +7,16 @@ $connectionOptions = array(
     "PWD" => "PVTmdk11"
 );
 
-// Connect to the database
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 if ($conn === false) {
     die(json_encode(array("error" => sqlsrv_errors())));
 }
 
-// Expecting JSON input
 $inputJSON = file_get_contents('php://input');
-$input = json_decode($inputJSON, true); // Convert JSON to array
+$input = json_decode($inputJSON, true); 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Extract data from JSON input
+    
     $roomType = $input['roomTypeModify'];
     $maxGuests = $input['maxGuestsModify'];
     $size = $input['sizeModify'];

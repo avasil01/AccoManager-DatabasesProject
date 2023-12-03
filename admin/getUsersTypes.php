@@ -1,14 +1,12 @@
 <?php
-// ... include your database connection code
 
-$serverName = "mssql.cs.ucy.ac.cy"; // update this
+$serverName = "mssql.cs.ucy.ac.cy"; 
 $connectionOptions = array(
-    "Database" => "mpanae01", // update this
-    "Uid" => "mpanae01", // update this
-    "PWD" => "PVTmdk11" // update this
+    "Database" => "mpanae01", 
+    "Uid" => "mpanae01", 
+    "PWD" => "PVTmdk11" 
 );
 
-// Establish the connection
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
