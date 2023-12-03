@@ -54,7 +54,7 @@ $username = $_SESSION['username'];
     <div id="Accommodation" class="tabcontent">
       <h3>Accommodation Management</h3>
       <button class="blue-button" onclick="createNewAccommodation()">+ Add New Accommodation</button>
-      <button class="blue-button" onclick="modifyAccommodation()"> Modify a Accommodation</button>
+      <button class="blue-button" onclick="modifyAccommodation()"> Modify an Accommodation</button>
     </div>
 
     <div id="RoomType" class="tabcontent">
