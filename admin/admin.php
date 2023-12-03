@@ -60,6 +60,7 @@ $username = $_SESSION['username'];
     <div id="RoomType" class="tabcontent">
       <h3>Room Type Management</h3>
       <button class="blue-button" onclick="createNewRoomType()">+ Add New Room Type</button>
+      <button class="blue-button" onclick="modifyRoomType()"> Modify a Room Type</button>
       
     </div>
 
@@ -72,7 +73,7 @@ $username = $_SESSION['username'];
 
   <div id="modifyAccommodationModal" class="modal">
    <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
-      <span class="close" onclick="closeModal()">&times;</span>
+      <span class="close" onclick="closeModal_modify_Acc()">&times;</span>
       <h2>Modify Accommodation (Provide the Accommodation ID to update)</h2>
       <form id="ModifyAccommodationForm">
         <div>
@@ -134,6 +135,28 @@ $username = $_SESSION['username'];
     </div>
   </div>
 
+  <div id="modifyRoomTypeModal" class="modal">
+    <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
+      <span class="close" onclick="closeModal_modify_roomtype()">&times;</span>
+      <h2>Modify Room Type: (Provide the Room Type and update)</h2>
+      <form id="ModifyRoomTypeForm">
+        <div>
+          <h3>Room Details:</h3>
+          Room Type: <input type="text" name="roomTypeModify"><br>
+          Room Name: <input type="text" name="roomNameModify"><br>
+          Maximum Number of Guests: <input type="number" name="maxGuestsModify" min="0" max="100"><br>
+          Size: <input type="number" name="sizeModify" min="0" max="2000"><br>
+          Bedrooms: <input type="number" name="bedroomsModify" min="0" max="100"><br>
+          AccommodationID: <input type="number" name="accommodationIdModify"><br>
+          Available Rooms: <input type="number" name="availableroomsModify"><br>
+        </div>
+        <button class = "button-modify-roomtype">SUBMIT</button>
+      </form>
+    </div>
+  </div>
+
+
+
   <div id="newRoomTypeModal" class="modal">
     <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
       <span class="close" onclick="closeModal_roomtype()">&times;</span>
@@ -185,6 +208,105 @@ $username = $_SESSION['username'];
 </html>
 
 <script>
+function modifyRoomTypeData() {
+    // Retrieve values from the form
+    var form = document.getElementById('ModifyRoomTypeForm');
+    var roomType = form.elements['roomTypeModify'].value;
+    var roomName = form.elements['roomNameModify'].value;
+    var maxGuests = form.elements['maxGuestsModify'].value;
+    var size = form.elements['sizeModify'].value;
+    var bedrooms = form.elements['bedroomsModify'].value;
+    var accommodationId = form.elements['accommodationIdModify'].value;
+    var availableRooms = form.elements['availableroomsModify'].value;
+
+    // Create the data object
+    var data = {
+        roomTypeModify: roomType,
+        roomNameModify: roomName,
+        maxGuestsModify: maxGuests,
+        sizeModify: size,
+        bedroomsModify: bedrooms,
+        accommodationIdModify: accommodationId,
+        availableroomsModify: availableRooms
+    };
+
+    // Send the request
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'ModifyRoomType.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            console.log(response);
+            if (response.success) {
+                alert('Room Type Modified Successfully');
+            } else {
+                alert('Error: ' + response.error);
+            }
+        }
+    };
+
+    xhr.send(JSON.stringify(data));
+}
+
+
+// Event listener for the modify room type button
+document.querySelector('.button-modify-roomtype').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default form submission
+    modifyRoomTypeData();
+});
+
+
+
+function modifyRoomType() {
+    document.getElementById('modifyRoomTypeModal').style.display = 'block';
+}
+function fetchRoomTypeData() {
+    var roomTypeInput = document.querySelector('input[name="roomTypeModify"]');
+    var username = '<?php echo $username; ?>';
+
+    roomTypeInput.addEventListener('input', function() {
+        var roomType = roomTypeInput.value;
+        if (roomType) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'GetRoomType.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    console.log('Room type data:', data);
+                    populateRoomTypeForm(data);
+                } else {
+                    console.error('Error fetching room type data:', xhr.status);
+                }
+            };
+
+            var data = 'roomType=' + encodeURIComponent(roomType) + '&username=' + encodeURIComponent(username);
+            xhr.send(data);
+        }
+    });
+}
+
+
+
+function populateRoomTypeForm(data) {
+    document.querySelector('input[name="maxGuestsModify"]').value = data.max_guests || '';
+    document.querySelector('input[name="sizeModify"]').value = data.size || '';
+    document.querySelector('input[name="bedroomsModify"]').value = data.bedrooms || '';
+    document.querySelector('input[name="accommodationIdModify"]').value = data.accommodation || '';
+    document.querySelector('input[name="availableroomsModify"]').value = data.available_rooms || '';
+    document.querySelector('input[name="roomNameModify"]').value = data.name || '';
+    // Add more fields as necessary
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    fetchRoomTypeData();
+});
+
+
+
 function submitModifyAccommodationForm() {
     var form = document.getElementById('ModifyAccommodationForm');
     var formData = new FormData(form);
@@ -419,6 +541,15 @@ document.addEventListener('DOMContentLoaded', function () {
         submitRoomType();
     });
 });
+function closeModal_modify_roomtype() {
+  var modal = document.getElementById('modifyRoomTypeModal');
+    modal.style.display = 'none';
+}
+function closeModal_modify_Acc() {
+  var modal = document.getElementById('modifyAccommodationModal');
+    modal.style.display = 'none';
+}
+
 function closeModal_roomtype() {
     var modal = document.getElementById('newRoomTypeModal');
     modal.style.display = 'none';

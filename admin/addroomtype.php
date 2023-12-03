@@ -17,6 +17,8 @@ if ($conn === false) {
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
+
+
 // SQL query
 $sql = "EXEC mpanae01.AddAccommodationType ?,?,?,?,?,?;";
 
@@ -29,10 +31,11 @@ $stmt = sqlsrv_prepare($conn, $sql, array(
     $data['size'], 
     $data['accommodationId']
 ));
-
+sqlsrv_execute($stmt);
 if ($stmt === false) {
     die(formatErrors(sqlsrv_errors()));
 } else {
+    
     echo json_encode(["success" => "Room Type added successfully"]);
 }
 
