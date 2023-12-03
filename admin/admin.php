@@ -54,6 +54,7 @@ $username = $_SESSION['username'];
     <div id="Accommodation" class="tabcontent">
       <h3>Accommodation Management</h3>
       <button class="blue-button" onclick="createNewAccommodation()">+ Add New Accommodation</button>
+      <button class="blue-button" onclick="modifyAccommodation()"> Modify a Accommodation</button>
     </div>
 
     <div id="RoomType" class="tabcontent">
@@ -68,6 +69,38 @@ $username = $_SESSION['username'];
       
     </div>
   </main>
+
+  <div id="modifyAccommodationModal" class="modal">
+   <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Modify Accommodation (Provide the Accommodation ID to update)</h2>
+      <form id="ModifyAccommodationForm">
+        <div>
+          <h3>Contact Info:</h3>
+          Accommodation ID: <input type="text" name="accommodationId"><br>
+          Accommodation Name: <input type="text" name="accommodationName"><br>
+          <h3>Person in Contact Info:</h3>
+          Full Name: <input type="text" name="contactFullName"><br>
+          Email: <input type="text" name="contactEmail"><br>
+          Phone Number: <input type="text" name="contactPhoneNumber"><br>
+          <h3>Accommodation Details:</h3>
+          Accommodation Category: <input type="text" name="accommodationCategory"><br>
+          Physical Location (Address): <input type="text" name="accommodationAddress"><br>
+          Geographic Coordinates: <input type="text" name="geographicCoordinates"><br>
+          Town: <input type="text" name="town"><br> 
+          <input type="text" name="username" readonly  value="<?php echo $username; ?>">
+          <h3>Details of Offered Services:</h3>
+          <div id="serviceInputsContainer">
+          <input type="text" name="offeredServices[]" class="service-input" placeholder="Service Name">
+          <button type="button" onclick="addServiceInput()">+</button>
+          </div>
+        </div>
+        
+      </form>
+      <button class="button-modify-accommodation" type="submit">Submit</button>
+    </div>
+  </div>
+
 
   <!-- add a new accommodation pop up form -->
   <div id="newAccommodationModal" class="modal">
@@ -152,6 +185,78 @@ $username = $_SESSION['username'];
 </html>
 
 <script>
+function submitModifyAccommodationForm() {
+    var form = document.getElementById('ModifyAccommodationForm');
+    var formData = new FormData(form);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'modifyAccommodation.php', true);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                alert('Modify Successful');
+            } else {
+                alert('Error: ' + response.error);
+            }
+        }
+    };
+
+    xhr.send(formData);
+}
+
+// Add event listener for the submit button
+document.querySelector('.button-modify-accommodation').addEventListener('click', function(event) {
+    event.preventDefault();
+    submitModifyAccommodationForm();
+});
+
+
+
+
+function fetchAccommodationData() {
+    var accommodationIdInput = document.querySelector('input[name="accommodationId"]');
+    accommodationIdInput.addEventListener('change', function() {
+        var accommodationId = accommodationIdInput.value;
+        if (accommodationId) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'GetAccommodation.php?accommodationId=' + accommodationId, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    populateAccommodationForm(response);
+                } else {
+                    console.error('Error fetching accommodation data:', xhr.status);
+                }
+            };
+            xhr.send();
+        }
+    });
+}
+
+function populateAccommodationForm(data) {
+    document.querySelector('input[name="accommodationId"]').value = data.legal_id || '';
+    document.querySelector('input[name="accommodationName"]').value = data.name || '';
+    document.querySelector('input[name="accommodationAddress"]').value = data.address || '';
+    document.querySelector('input[name="geographicCoordinates"]').value = data.coordinates || '';
+    document.querySelector('input[name="accommodationCategory"]').value = data.categoryName || ''; 
+    document.querySelector('input[name="contactPhoneNumber"]').value = data.phone_number || '';
+    document.querySelector('input[name="contactFullName"]').value = data.name || '';
+    document.querySelector('input[name="contactEmail"]').value = data.email || '';
+    document.querySelector('input[name="town"]').value = data.town || '';
+
+
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchAccommodationData();
+    // other event listeners
+});
+
+
+
 function addNewProduct() {
     var form = document.getElementById('newProductForm');
     var data = {
@@ -414,6 +519,9 @@ function createNewProduct() {
 function createNewAccommodation() {
     document.getElementById('newAccommodationModal').style.display = 'block';
   }
+function modifyAccommodation(){
+    document.getElementById('modifyAccommodationModal').style.display = 'block';
+}
 
   function closeModal() {
     document.getElementById('newAccommodationModal').style.display = 'none';
