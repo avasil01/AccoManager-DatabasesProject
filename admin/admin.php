@@ -101,10 +101,9 @@ $username = $_SESSION['username'];
     </div>
   </div>
 
-     <!-- add a new room type pop up form -->
   <div id="newRoomTypeModal" class="modal">
     <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
-      <span class="close" onclick="closeModal()">&times;</span>
+      <span class="close" onclick="closeModal_roomtype()">&times;</span>
       <h2>Add New Room Type</h2>
       <form id="newRoomTypeForm">
         <div>
@@ -112,22 +111,11 @@ $username = $_SESSION['username'];
           Room Type: <input type="text" name="roomType"><br>
           Maximum Number of Guests: <input type="number" name="maxGuests" min="0" max="100"><br>
           Size: <input type="number" name="size" min="0" max="2000"><br>
-          <h3>Features Provided:</h3>
-          <input type="text" name="featuresProvided">
-          <button type="button" onclick="addFeatureInput()">+</button><br>
-          <h3>Price Category:</h3>
-          Price: <input type="number" name="priceCategory" min="1" max="1000"><br>
-          <h3>Terms:</h3>
-          <input type="text" name="terms" class="termsInput">
-          Refund (%): <input type="number" name="refundPercentage" class="termsInput" value="0"><br>
-          <button type="button" onclick="addTermInput()">+</button><br>
-          <h3>Meals:</h3>
-          <input type="text" name="meals">
-          <button type="button" onclick="addMealInput()">+</button><br>
-          <h3>Inventory (Availability):</h3>
-          <!-- Additional fields for inventory can be added here -->
+          Bedrooms: <input type="number" name="bedrooms" min="0" max="100"><br>
+          AccommodationID: <input type="number" name="accommodationId"><br>
+          Available Rooms: <input type="number" name="availablerooms"><br>
         </div>
-        <input type="submit" value="Submit">
+        <button class = "button-submit-roomtype">SUBMIT</button>
       </form>
     </div>
   </div>
@@ -135,19 +123,17 @@ $username = $_SESSION['username'];
   <!-- add a new product type pop up form -->
   <div id="newProductModal" class="modal">
     <div class="modal-content" style="border-radius: 10px; box-shadow: 0px 0px 10px #888888;">
-      <span class="close" onclick="closeModal('newProductModal')">&times;</span>
+      <span class="close" onclick="closeModal_product()">&times;</span>
       <h2>Add New Product</h2>
       <form id="newProductForm">
         <div>
           <h3>Product Details:</h3>
-          Room Type: <input type="text" name="productRoomType"><br>
+          Date: <input type="date" name="productDate"><br>
           Room Price: <input type="text" name="productRoomPrice"><br>
-          <h3>Terms:</h3>
-          <input type="text" name="productTerms" class="productTermsInput">
-          <button type="button" onclick="addProductTermInput()">+</button><br>
-          <h3>Meals:</h3>
-          <input type="text" name="productMeals">
-          <button type="button" onclick="addProductMealInput()">+</button><br>
+          Meals: <input type="text" name="productMeals"><br>
+          Price: <input type="number" name="productPrice"><br>
+          Policy: <input type="text" name="productPolicy"><br>
+          AccommodationTypeID: <input type="number" name="productAccommodationTypeId"><br>
         </div>
         <input type="submit" value="Submit">
       </form>
@@ -161,7 +147,8 @@ $username = $_SESSION['username'];
 
 <script>
 function submitServices(accommodationId) {
-    var serviceInputs = document.querySelectorAll('input[name="offeredServices"]');
+  var serviceInputs = document.querySelectorAll('input[name="offeredServices[]"]');
+    console.log("Service Inputs:", serviceInputs); // Check if inputs are collected
     serviceInputs.forEach(function(serviceInput) {
         
         var serviceName = serviceInput.value;
@@ -178,8 +165,8 @@ function submitServices(accommodationId) {
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     var response = JSON.parse(xhr.responseText);
-                    if (!response.success) {
-                        alert('Error adding service: ' + response.error);
+                    if (response.success) {
+                        alert('Added a Room Type successfully');
                     }
                 } else {
                     alert('An error occurred while sending the request for service addition.');
@@ -200,6 +187,8 @@ function addServiceInput() {
     newInput.className = 'service-input';
     newInput.placeholder = 'Service Name';
     container.appendChild(newInput);
+
+    console.log("New service input added.");
 }
 
 
@@ -211,13 +200,10 @@ function submitRoomType() {
     var data = {
         roomType: form.elements['roomType'].value,
         maxGuests: form.elements['maxGuests'].value,
+        bedrooms: form.elements['bedrooms'].value,
+        availablerooms: form.elements['availablerooms'].value,
         size: form.elements['size'].value,
-        featuresProvided: form.elements['featuresProvided'].value,
-        priceCategory: form.elements['priceCategory'].value,
-        terms: form.elements['terms'].value,
-        refundPercentage: form.elements['refundPercentage'].value,
-        meals: form.elements['meals'].value
-        // Add other fields here if necessary
+        accommodationId: form.elements['accommodationId'].value
     };
 
     var xhr = new XMLHttpRequest();
@@ -249,7 +235,10 @@ document.addEventListener('DOMContentLoaded', function () {
         submitRoomType();
     });
 });
-
+function closeModal_roomtype() {
+    var modal = document.getElementById('newRoomTypeModal');
+    modal.style.display = 'none';
+}
 
 
 function closeModal() {
@@ -347,38 +336,11 @@ function createNewAccommodation() {
     document.getElementById('newAccommodationModal').style.display = 'none';
   }
 
-//   function addServiceInput() {
-//     var form = document.getElementById('newAccommodationForm');
-//     var input = document.createElement('input');
-//     input.type = 'text';
-//     input.name = 'offeredServices';
-//     input.style.marginTop = "10px"; // Optional, for spacing between inputs
-
-//     // Find the submit button in the form
-//     var submitButton = form.querySelector('input[type=submit]');
-
-//     // Insert the new input field before the submit button
-//     form.insertBefore(input, submitButton);
-// }
-
 function createNewRoomType() {
     document.getElementById('newRoomTypeModal').style.display = 'block';
   }
 
 
-  function addFeatureInput() {
-    var form = document.getElementById('newRoomTypeForm');
-    var lastFeatureInput = form.querySelectorAll('input[name="featuresProvided"]').length > 0 ?
-                           form.querySelectorAll('input[name="featuresProvided"]') :
-                           [form.querySelector('input[name="roomType"]')]; // Fallback to room type input
-    var newFeatureInput = document.createElement('input');
-    newFeatureInput.type = 'text';
-    newFeatureInput.name = 'featuresProvided';
-    newFeatureInput.style.marginTop = "10px";
-
-    var referenceNode = lastFeatureInput[lastFeatureInput.length - 1];
-    referenceNode.parentNode.insertBefore(newFeatureInput, referenceNode.nextSibling);
-}
 
 function addTermInput() {
     var form = document.getElementById('newRoomTypeForm');
