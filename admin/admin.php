@@ -131,7 +131,6 @@ $username = $_SESSION['username'];
           Date: <input type="date" name="productDate"><br>
           Room Price: <input type="text" name="productRoomPrice"><br>
           Meals: <input type="text" name="productMeals"><br>
-          Price: <input type="number" name="productPrice"><br>
           Policy: <input type="text" name="productPolicy"><br>
           Refund Percentage: <input type="number" name="productRefundPercentage"><br>
           Penalty Percentage: <input type="number" name="productPenaltyPercentage"><br>
@@ -142,7 +141,7 @@ $username = $_SESSION['username'];
     
             </select><br>
         </div>
-        <input type="submit" value="Submit">
+        <button class="submit-new-product">Submit</button>
       </form>
     </div>
   </div>
@@ -159,7 +158,6 @@ function addNewProduct() {
         productDate: form.elements['productDate'].value,
         productRoomPrice: form.elements['productRoomPrice'].value,
         productMeals: form.elements['productMeals'].value,
-        productPrice: form.elements['productPrice'].value,
         productPolicy: form.elements['productPolicy'].value,
         productRefundPercentage: form.elements['productRefundPercentage'].value,
         productPenaltyPercentage: form.elements['productPenaltyPercentage'].value,
@@ -175,10 +173,10 @@ function addNewProduct() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
             if (response.success) {
-                console.log('Product added successfully');
+                alert('Product added successfully');
                 // Additional actions upon success, like closing the modal or refreshing the page
             } else {
-                console.error('Error adding product:', response.error);
+                alert('Error adding product:', response.error);
                 // Error handling
             }
         }
@@ -188,7 +186,7 @@ function addNewProduct() {
 
 // Event listener for your form's submit button
 document.addEventListener('DOMContentLoaded', function() {
-    var submitButton = document.querySelector('.button-submit-product'); // Update this selector to match your submit button
+    var submitButton = document.querySelector('.submit-new-product'); // Update this selector to match your submit button
     submitButton.addEventListener('click', function(event) {
         event.preventDefault();
         addNewProduct();

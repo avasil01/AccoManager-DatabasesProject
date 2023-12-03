@@ -33,7 +33,7 @@ $stmt = sqlsrv_prepare($conn, $sql, array(
 if ($stmt === false) {
     die(formatErrors(sqlsrv_errors()));
 } else {
-    echo json_encode(["success" => "Accommodation added successfully"]);
+    echo json_encode(["success" => "Room Type added successfully"]);
 }
 
 // Close the statement and connection

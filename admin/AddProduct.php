@@ -1,5 +1,17 @@
 <?php
-// ... Include your database connection code ...
+$serverName = "mssql.cs.ucy.ac.cy"; // update this
+$connectionOptions = array(
+    "Database" => "mpanae01", // update this
+    "Uid" => "mpanae01", // update this
+    "PWD" => "PVTmdk11" // update this
+);
+
+// Establish the connection
+$conn = sqlsrv_connect($serverName, $connectionOptions);
+if ($conn === false) {
+    die(json_encode(array("error" => sqlsrv_errors())));
+}
+
 
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
@@ -8,24 +20,27 @@ $data = json_decode($input, true);
 
 // Prepare and execute your SQL statement
 // For example:
-$query = "EXEC mpanae01.AddProduct ?, ?, ?, ?, ?, ?";
+$query = "EXEC mpanae01.AddProduct ?, ?, ?, ?, ?, ?, ?, ?;";
 $params = array(
     $data['productDate'],
     $data['productRoomPrice'],
     $data['productMeals'],
     $data['productPolicy'],
-    $data[' productRefundPercentage'],
+    $data['productRefundPercentage'],
     $data['productPenaltyPercentage'],
     $data['productDiscountPercentage'],
     $data['productAccommodationTypeId']
 );
 
 $stmt = sqlsrv_query($conn, $query, $params);
+
 if ($stmt === false) {
-    // Handle query error
-    echo json_encode(array("success" => false, "error" => sqlsrv_errors()));
+    die(json_encode(array("error" => sqlsrv_errors())));
 } else {
-    // Success response
-    echo json_encode(array("success" => true));
+    echo json_encode(["success" => "Product added successfully"]);
 }
+
+
+sqlsrv_free_stmt($stmt);
+sqlsrv_close($conn);
 ?>
